@@ -1,0 +1,64 @@
+@page
+@model CartModel
+@{
+    ViewData["Title"] = "Winkelwagen";
+}
+<h2 class="mb-4 text-primary">@ViewData["Title"]</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        @if (Model.Items.Any())
+        {
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-center">Aantal</th>
+                        <th class="text-end">Prijs p/st</th>
+                        <th class="text-end">Subtotaal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                        {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">€@item.UnitPrice:F2</td>
+                        <td class="text-end">€@(item.Quantity * item.UnitPrice):F2</td>
+                        <td class="text-end">
+                            <form method="post" asp-page-handler="Remove" class="d-inline">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Verwijder</button>
+                            </form>
+                        </td>
+                    </tr>
+                        }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="fw-semibold text-end">Totaal</td>
+                        <td class="fw-semibold text-end">€@Model.Items.Sum(i => i.Quantity * i.UnitPrice):F2</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        }
+        else
+        {
+        <div class="p-4 text-center">
+            <p class="mb-0">Je winkelwagen is nog leeg.</p>
+        </div>
+        }
+    </div>
+    <div class="card-footer bg-white text-end">
+        <a asp-page="/Index" class="btn btn-outline-secondary me-2">Verder winkelen</a>
+        @if (Model.Items.Any())
+        {
+        <button class="btn btn-success">Afrekenen</button>
+        }
+    </div>
+</div>
