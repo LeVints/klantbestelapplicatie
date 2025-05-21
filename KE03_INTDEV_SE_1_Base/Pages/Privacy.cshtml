@@ -3,83 +3,39 @@
 @{
     ViewData["Title"] = "Privacy Policy";
 }
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="utf-8" />
-    <title>@ViewData["Title"] – Bestelsysteem</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-        }
 
-        .card {
-            border-radius: 0.75rem;
-        }
-
-        .navbar-brand {
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand text-primary" href="/">Bestelsysteem</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMenu">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
+<section class="my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">@ViewData["Title"]</h5>
         </div>
-    </nav>
+        <div class="card-body">
+            <p>
+                Op deze pagina vind je onze privacyverklaring. Leg hier uit welke gegevens je verzamelt,
+                hoe je ze gebruikt en hoe klanten hun rechten kunnen uitoefenen.
+            </p>
 
-    <div class="container my-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">@ViewData["Title"]</h5>
-            </div>
-            <div class="card-body">
-                <p>
-                    Op deze pagina vind je onze privacyverklaring. Leg hier uit welke gegevens je verzamelt,
-                    hoe je ze gebruikt en hoe klanten hun rechten kunnen uitoefenen.
-                </p>
-                <h6 class="mt-4">Welke gegevens we verzamelen</h6>
-                <ul>
-                    <li>Naam en contactgegevens</li>
-                    <li>Bestel- en betaalgegevens</li>
-                    <li>IP-adres en browserinformatie</li>
-                </ul>
-                <h6 class="mt-4">Waarom we deze data gebruiken</h6>
-                <p>Om bestellingen correct uit te voeren, klantenservice te bieden en wet- en regelgeving na te leven.</p>
-                <h6 class="mt-4">Jouw rechten</h6>
-                <p>Je kunt altijd:</p>
-                <ul>
-                    <li>Een overzicht van je persoonsgegevens opvragen</li>
-                    <li>Correctie of verwijdering van je gegevens vragen</li>
-                    <li>Bezwaar maken tegen bepaalde verwerkingen</li>
-                </ul>
-                <p class="mt-4">Voor vragen over privacy kun je mailen naar <a href="mailto:privacy@matrixinc.com">privacy@matrixinc.com</a>.</p>
-            </div>
+            <h6 class="mt-4">Welke gegevens we verzamelen</h6>
+            <ul>
+                <li>Naam en contactgegevens</li>
+                <li>Bestel- en betaalgegevens</li>
+                <li>IP-adres en browserinformatie</li>
+            </ul>
+
+            <h6 class="mt-4">Waarom we deze data gebruiken</h6>
+            <p>Om bestellingen correct uit te voeren, klantenservice te bieden en wet- en regelgeving na te leven.</p>
+
+            <h6 class="mt-4">Jouw rechten</h6>
+            <ul>
+                <li>Een overzicht van je persoonsgegevens opvragen</li>
+                <li>Correctie of verwijdering van je gegevens vragen</li>
+                <li>Bezwaar maken tegen bepaalde verwerkingen</li>
+            </ul>
+
+            <p class="mt-4">
+                Voor vragen over privacy kun je mailen naar
+                <a href="mailto:privacy@matrixinc.com">privacy@matrixinc.com</a>.
+            </p>
         </div>
     </div>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</section>
