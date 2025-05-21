@@ -1,41 +1,103 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Online Bestelsysteem";
 }
-<div class="alert-info">
-    <p class="p-1">
-        Dit project kun je gebruiken als startpunt voor de individuele inleveropdracht: <a href="https://moodle.zuyd.nl/mod/resource/view.php?id=1262065">KE03_INTDEV_SE_1</a>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] – Bestelsysteem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
 
-        <ul>
-            <li>Wat ga je maken: Een gebruiksvriendelijk online bestelsysteem voor een klant om producten te bestellen.</li>
-            <li>
-                Hoe ga je dit maken?<br />
-                - Individuele inleveropdracht.<br/>
-                - Pas de principes van HCI toe (bijv. Paper prototyping, design principles etc…)<br />
-                - Maak gebruik van: .NET core razor pages met bijbehorende zaken zoals, html, css, js, bootstrap, jquery<br />
-                - Maak gebruik van git en github voor source control van jouw code<br />
-            </li>
-            <li>
-                Je krijgt een dal (data access layer) meegeleverd. Qua inhoud is die niet perfect gevuld, maar qua structuur biedt die voldoende om een mooi bestel systeem te kunnen maken. <br /> 
-                Maar mis je iets, je bent vrij om alles naar wens aan te passen! Ben creatief!
-            </li>
-        </ul>
-    </p>
-</div>
+        .card {
+            border-radius: 0.75rem;
+        }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Klant</th>
-            <th>Aantal Orders</th>
-        </tr>
-    </thead>
-    @foreach (var c in Model.Customers)
-    {        
-        <tr>
-            <td>@Html.DisplayName(c.Name)</td>
-            <td>@Html.DisplayName(c.Orders.Count.ToString())</td>           
-        </tr>
-    }
-</table>
+        .navbar-brand {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="/">Bestelsysteem</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <!-- HERO -->
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary">Welkom bij ons Bestelsysteem</h1>
+            <p class="lead text-muted">Een gebruiksvriendelijk platform voor al uw bestellingen</p>
+        </div>
+
+        <!-- KLANTOVERZICHT -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Klantoverzicht</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Klantnaam</th>
+                                <th>Aantal Orders</th>
+                                <th>Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.Customers)
+                            {
+                            <tr>
+                                <td class="ps-4 fw-semibold">@Html.DisplayFor(m => c.Name)</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                        @Html.DisplayFor(m => c.Orders.Count)
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-outline-primary me-1">Bekijk</a>
+                                    <a href="#" class="btn btn-sm btn-outline-success">Bestel</a>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Totaal @Model.Customers.Count klanten gevonden</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
