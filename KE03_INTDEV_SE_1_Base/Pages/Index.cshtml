@@ -9,6 +9,30 @@
     <p class="lead text-muted">Een gebruiksvriendelijk platform voor al uw bestellingen</p>
 </section>
 
+<!-- Formulier om nieuwe klant toe te voegen -->
+<div class="container mb-4">
+    <form method="post">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <input type="text" name="Name" class="form-control" placeholder="Naam (bv. Vince)" required />
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="Address" class="form-control" placeholder="Adres (bv. Matrixlaan 101)" required />
+            </div>
+            <div class="col-md-2">
+                <div class="form-check">
+                    <input type="checkbox" name="Active" class="form-check-input" checked />
+                    <label class="form-check-label">Actief</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success">Nieuwe klant toevoegen</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Klantoverzicht -->
 <div class="container mb-5">
     <div class="card shadow-sm">
         <div class="card-header bg-success text-white">
@@ -27,20 +51,20 @@
                     <tbody>
                         @foreach (var c in Model.Customers)
                         {
-                        <tr>
-                            <td class="ps-4 fw-semibold">@c.Name</td>
-                            <td>
-                                <span class="badge bg-info text-dark">
-                                    @c.Orders.Count
-                                </span>
-                            </td>
-                            <td>
-                                <a asp-page="/Customer/Details" asp-route-id="@c.Id"
-                                   class="btn btn-sm btn-outline-primary me-1">Bekijk</a>
-                                <a asp-page="/Order/Create" asp-route-customerId="@c.Id"
-                                   class="btn btn-sm btn-outline-success">Bestel</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td class="ps-4 fw-semibold">@c.Name</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                        @c.Orders.Count
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-page="/Customer/Details" asp-route-id="@c.Id"
+                                       class="btn btn-sm btn-outline-primary me-1">Bekijk</a>
+                                    <a asp-page="/Order/Create" asp-route-customerId="@c.Id"
+                                       class="btn btn-sm btn-outline-success">Bestel</a>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
