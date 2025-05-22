@@ -35,6 +35,10 @@
                                asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link @(currentPath == "/Overzicht" ? "active" : "")"
+                               asp-page="/Overzicht">Overzicht</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link @(currentPath.StartsWith("/cart") ? "active" : "")"
                                asp-page="/Cart">Winkelwagen</a>
                         </li>

@@ -1,0 +1,23 @@
+@page
+@model KE03_INTDEV_SE_1_Base.Pages.OverzichtModel
+@{
+    ViewData["Title"] = "Overzicht";
+}
+
+<h1>Overzicht</h1>
+
+<p>Welkom op de overzichtspagina.</p>
+
+@if (Model.Customers != null && Model.Customers.Count > 0)
+{
+<ul>
+    @foreach (var klant in Model.Customers)
+        {
+    <li>@klant.Name</li>
+        }
+</ul>
+}
+else
+{
+<p>Geen klanten gevonden.</p>
+}
