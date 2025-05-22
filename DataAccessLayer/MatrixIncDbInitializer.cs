@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer
 {
@@ -11,16 +9,13 @@ namespace DataAccessLayer
     {
         public static void Initialize(MatrixIncDbContext context)
         {
-            // Look for any customers.
+            // Check of de database al data bevat
             if (context.Customers.Any())
             {
-                return;   // DB has been seeded
+                return;   // DB is al gevuld
             }
 
-            // TODO: Hier moet ik nog wat namen verzinnen die betrekking hebben op de matrix.
-            // - Denk aan de m3 boutjes, moertjes en ringetjes.
-            // - Denk aan namen van schepen
-            // - Denk aan namen van vliegtuigen            
+            // Klanten
             var customers = new Customer[]
             {
                 new Customer { Name = "Neo", Address = "123 Elm St" , Active=true},
@@ -29,15 +24,17 @@ namespace DataAccessLayer
             };
             context.Customers.AddRange(customers);
 
+            // Orders
             var orders = new Order[]
             {
-                new Order { Customer = customers[0], OrderDate = DateTime.Parse("2021-01-01")},
-                new Order { Customer = customers[0], OrderDate = DateTime.Parse("2021-02-01")},
-                new Order { Customer = customers[1], OrderDate = DateTime.Parse("2021-02-01")},
-                new Order { Customer = customers[2], OrderDate = DateTime.Parse("2021-03-01")}
-            };  
+                new Order { Customer = customers[0], OrderDate = DateTime.Parse("2021-01-01") },
+                new Order { Customer = customers[0], OrderDate = DateTime.Parse("2021-02-01") },
+                new Order { Customer = customers[1], OrderDate = DateTime.Parse("2021-02-01") },
+                new Order { Customer = customers[2], OrderDate = DateTime.Parse("2021-03-01") }
+            };
             context.Orders.AddRange(orders);
 
+            // Producten
             var products = new Product[]
             {
                 new Product { Name = "Nebuchadnezzar", Description = "Het schip waarop Neo voor het eerst de echte wereld leert kennen", Price = 10000.00m },
@@ -46,6 +43,7 @@ namespace DataAccessLayer
             };
             context.Products.AddRange(products);
 
+            // Onderdelen
             var parts = new Part[]
             {
                 new Part { Name = "Tandwiel", Description = "Overdracht van rotatie in bijvoorbeeld de motor of luikmechanismen"},
@@ -55,9 +53,28 @@ namespace DataAccessLayer
             };
             context.Parts.AddRange(parts);
 
-            context.SaveChanges();
+            context.SaveChanges(); // Sla eerst basisgegevens op zodat IDs beschikbaar zijn
 
-            context.Database.EnsureCreated();
+            // Koppel producten aan orders
+            orders[0].Products.Add(products[0]);
+            orders[0].Products.Add(products[1]);
+
+            orders[1].Products.Add(products[2]);
+
+            orders[2].Products.Add(products[1]);
+
+            orders[3].Products.Add(products[0]);
+            orders[3].Products.Add(products[2]);
+
+            // Koppel onderdelen aan producten
+            products[0].Parts.Add(parts[0]);
+            products[0].Parts.Add(parts[1]);
+
+            products[1].Parts.Add(parts[2]);
+
+            products[2].Parts.Add(parts[3]);
+
+            context.SaveChanges(); // Sla alle relaties op
         }
     }
 }
