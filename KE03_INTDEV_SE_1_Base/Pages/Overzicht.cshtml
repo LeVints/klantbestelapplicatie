@@ -8,28 +8,14 @@
 
 <p>Welkom op de overzichtspagina.</p>
 
+<h2>Klanten</h2>
 @if (Model.Customers != null && Model.Customers.Count > 0)
 {
     <ul>
         @foreach (var klant in Model.Customers)
         {
             <li>
-                <strong>@klant.Name</strong> - @klant.Address
-                <ul>
-                    @if (klant.Orders != null && klant.Orders.Count > 0)
-                    {
-                        @foreach (var order in klant.Orders)
-                        {
-                            <li>
-                                Orderdatum: @order.OrderDate.ToShortDateString()
-                            </li>
-                        }
-                    }
-                    else
-                    {
-                        <li><em>Geen orders voor deze klant.</em></li>
-                    }
-                </ul>
+                <strong>@klant.Name</strong> – @klant.Address
             </li>
         }
     </ul>
@@ -37,4 +23,40 @@
 else
 {
     <p>Geen klanten gevonden.</p>
+}
+
+<h2>Orders</h2>
+@if (Model.Orders != null && Model.Orders.Count > 0)
+{
+    <ul>
+        @foreach (var order in Model.Orders)
+        {
+            <li>
+                Order van: <strong>@order.Customer?.Name</strong> – Datum: @order.OrderDate.ToString("dd-MM-yyyy")
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Geen orders gevonden.</p>
+}
+
+<h2>Producten</h2>
+@if (Model.Products != null && Model.Products.Count > 0)
+{
+    <ul>
+        @foreach (var product in Model.Products)
+        {
+            <li>
+                <strong>@product.Name</strong><br />
+                @product.Description<br />
+                Prijs: €@product.Price
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Geen producten gevonden.</p>
 }
