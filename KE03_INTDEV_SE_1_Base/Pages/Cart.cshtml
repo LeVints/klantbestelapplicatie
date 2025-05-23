@@ -6,6 +6,13 @@
 
 <h1 class="mt-5">Winkelwagen</h1>
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
+}
+
 @if (!Model.Items.Any())
 {
     <p class="text-muted">Je winkelwagen is leeg.</p>
@@ -16,9 +23,10 @@ else
         <thead>
             <tr>
                 <th>Product</th>
-                <th class="text-center">Aantal</th>
+                <th style="width: 160px;" class="text-center">Aantal</th>
                 <th class="text-end">Prijs per stuk</th>
                 <th class="text-end">Subtotaal</th>
+                <th class="text-end">Acties</th>
             </tr>
         </thead>
         <tbody>
@@ -26,9 +34,23 @@ else
             {
                 <tr>
                     <td>@item.ProductName</td>
-                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-center">
+                        <form method="post" asp-page-handler="UpdateQuantity" class="d-inline">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1"
+                                   class="form-control form-control-sm text-center"
+                                   style="width: 70px;"
+                                   onchange="this.form.submit()" />
+                        </form>
+                    </td>
                     <td class="text-end">&euro; @item.UnitPrice.ToString("0.00")</td>
-                    <td class="text-end">&euro; @(item.UnitPrice * item.Quantity).ToString("0.00")</td>
+                    <td class="text-end">&euro; @((item.UnitPrice * item.Quantity).ToString("0.00"))</td>
+                    <td class="text-end">
+                        <form method="post" asp-page-handler="RemoveItem" class="d-inline">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Verwijder</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -36,13 +58,14 @@ else
             <tr>
                 <td colspan="3" class="text-end fw-bold">Totaal</td>
                 <td class="text-end fw-bold">
-                    &euro; @Model.Items.Sum(i => i.UnitPrice * i.Quantity).ToString("0.00")
+                    &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))
                 </td>
+                <td></td>
             </tr>
         </tfoot>
     </table>
+
     <form method="post">
         <button type="submit" asp-page-handler="PlaceOrder" class="btn btn-success mt-3">Bestellen</button>
     </form>
-
 }

@@ -36,6 +36,36 @@ namespace KE03_INTDEV_SE_1_Base.Pages
             Items = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
         }
 
+        public IActionResult OnPostUpdateQuantity(int productId, int quantity)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            var item = cart.FirstOrDefault(i => i.ProductId == productId);
+            if (item != null)
+            {
+                item.Quantity = Math.Max(quantity, 1);
+                HttpContext.Session.SetObject("Cart", cart);
+                TempData["Message"] = $"Aantal voor '{item.ProductName}' bijgewerkt.";
+            }
+
+            return RedirectToPage("Cart");
+        }
+
+        public IActionResult OnPostRemoveItem(int productId)
+        {
+            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            var itemToRemove = cart.FirstOrDefault(i => i.ProductId == productId);
+            if (itemToRemove != null)
+            {
+                cart.Remove(itemToRemove);
+                HttpContext.Session.SetObject("Cart", cart);
+                TempData["Message"] = $"'{itemToRemove.ProductName}' is verwijderd uit je winkelmand.";
+            }
+
+            return RedirectToPage("Cart");
+        }
+
         public IActionResult OnPostPlaceOrder()
         {
             var items = HttpContext.Session.GetObject<List<CartItem>>("Cart");
@@ -45,14 +75,12 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 return RedirectToPage("Cart");
             }
 
-            // Hardcoded klant-ID; in productie kies je de ingelogde gebruiker
-            var customerId = 1;
+            var customerId = 1; // Hardcoded klant
 
             var newOrder = new Order
             {
                 CustomerId = customerId,
                 OrderDate = DateTime.Now
-                // Products-lijst wordt hieronder gevuld
             };
 
             foreach (var item in items)
@@ -60,7 +88,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 var product = _productRepository.GetProductById(item.ProductId);
                 if (product != null)
                 {
-                    newOrder.Products.Add(product); // ✅ lijst is al geïnitialiseerd in het model
+                    newOrder.Products.Add(product);
                 }
             }
 
