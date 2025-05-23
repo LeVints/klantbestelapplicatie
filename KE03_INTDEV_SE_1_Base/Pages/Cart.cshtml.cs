@@ -75,7 +75,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 return RedirectToPage("Cart");
             }
 
-            var customerId = 1; // Hardcoded klant
+            var customerId = 1; // In echte app: haal uit sessie of inlog
 
             var newOrder = new Order
             {
@@ -88,7 +88,10 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 var product = _productRepository.GetProductById(item.ProductId);
                 if (product != null)
                 {
-                    newOrder.Products.Add(product);
+                    for (int i = 0; i < item.Quantity; i++)
+                    {
+                        newOrder.Products.Add(product);
+                    }
                 }
             }
 

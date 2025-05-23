@@ -1,58 +1,33 @@
 ﻿@page
 @model KE03_INTDEV_SE_1_Base.Pages.OverzichtModel
-
 @{
-    ViewData["Title"] = "Overzicht - Klanten en Bestellingen";
+    ViewData["Title"] = "Overzicht";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Overzicht</h1>
 
-@foreach (var klant in Model.Customers)
-{
-    <div class="card mb-3">
-        <div class="card-header">
-            <strong>@klant.Name</strong> – @klant.Address
-        </div>
-        <div class="card-body">
-            <h5>Bestellingen:</h5>
-
-            @{
-                var klantBestellingen = Model.Orders.Where(b => b.CustomerId == klant.Id).ToList();
-            }
-
-            @if (klantBestellingen.Any())
-            {
-                <ul>
-                    @foreach (var bestelling in klantBestellingen)
-                    {
-                        <li>
-                            Order geplaatst op: @bestelling.OrderDate.ToShortDateString()
-
-                            <ul>
-                                @if (bestelling.Products == null)
-                                {
-                                    <li style="color: red;"><em>⚠ Geen productdata (null)</em></li>
-                                }
-                                else if (!bestelling.Products.Any())
-                                {
-                                    <li><em>Geen producten in deze order</em></li>
-                                }
-                                else
-                                {
-                                    @foreach (var product in bestelling.Products)
-                                    {
-                                        <li>@product.Name</li>
-                                    }
-                                }
-                            </ul>
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <p><em>Geen bestellingen gevonden.</em></p>
-            }
-        </div>
-    </div>
-}
+<h2>Klanten</h2>
+<ul>
+    @foreach (var klant in Model.Customers)
+    {
+        <li>
+            <strong>@klant.Name</strong> - @klant.Address
+            <ul>
+                @foreach (var bestelling in klant.Orders)
+                {
+                    <li>
+                        Bestelling op: @bestelling.OrderDate.ToShortDateString()
+                        <ul>
+                            @foreach (var groep in bestelling.Products.GroupBy(p => p.Id))
+                            {
+                                var aantal = groep.Count();
+                                var productNaam = groep.First().Name;
+                                <li>@($"{productNaam} x{aantal}")</li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+</ul>
