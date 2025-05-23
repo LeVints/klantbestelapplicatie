@@ -19,10 +19,6 @@ namespace KE03_INTDEV_SE_1_Base.Pages
         public IList<Customer> Customers { get; set; }
         public IList<Product> Products { get; set; }
 
-        [BindProperty] public string? Name { get; set; }
-        [BindProperty] public string? Address { get; set; }
-        [BindProperty] public bool Active { get; set; }
-
         public IndexModel(ILogger<IndexModel> logger, ICustomerRepository customerRepository, IProductRepository productRepository)
         {
             _logger = logger;
