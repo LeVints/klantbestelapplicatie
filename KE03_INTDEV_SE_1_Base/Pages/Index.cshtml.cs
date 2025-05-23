@@ -2,6 +2,11 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using KE03_INTDEV_SE_1_Base.Helpers;
 
 namespace KE03_INTDEV_SE_1_Base.Pages
 {
@@ -9,50 +14,52 @@ namespace KE03_INTDEV_SE_1_Base.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IProductRepository _productRepository;
 
         public IList<Customer> Customers { get; set; }
+        public IList<Product> Products { get; set; }
 
-        // Voor binding van formulierdata
-        [BindProperty]
-        public string? Name { get; set; }
-        [BindProperty]
-        public string? Address { get; set; }
-        [BindProperty]
-        public bool Active { get; set; }
+        [BindProperty] public string? Name { get; set; }
+        [BindProperty] public string? Address { get; set; }
+        [BindProperty] public bool Active { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, ICustomerRepository customerRepository)
+        public IndexModel(ILogger<IndexModel> logger, ICustomerRepository customerRepository, IProductRepository productRepository)
         {
             _logger = logger;
             _customerRepository = customerRepository;
+            _productRepository = productRepository;
             Customers = new List<Customer>();
+            Products = new List<Product>();
         }
 
         public void OnGet()
         {
             Customers = _customerRepository.GetAllCustomers().ToList();
-            _logger.LogInformation($"getting all {Customers.Count} customers");
+            Products = _productRepository.GetAllProducts().ToList();
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPostAddToCart(int productId, string productName, decimal price)
         {
-            if (string.IsNullOrWhiteSpace(Name) || string.IsNullOrWhiteSpace(Address))
+            var cart = HttpContext.Session.GetObject<List<CartModel.CartItem>>("Cart") ?? new List<CartModel.CartItem>();
+
+            var existing = cart.FirstOrDefault(i => i.ProductId == productId);
+            if (existing != null)
             {
-                ModelState.AddModelError(string.Empty, "Naam en Adres zijn verplicht.");
-                OnGet(); // Reload customers
-                return Page();
+                existing.Quantity++;
+            }
+            else
+            {
+                cart.Add(new CartModel.CartItem
+                {
+                    ProductId = productId,
+                    ProductName = productName,
+                    Quantity = 1,
+                    UnitPrice = price
+                });
             }
 
-            var newCustomer = new Customer
-            {
-                Name = Name,
-                Address = Address,
-                Active = Active
-            };
-
-            _customerRepository.AddCustomer(newCustomer);
-            _logger.LogInformation($"Klant toegevoegd: {Name}");
-
-            return RedirectToPage(); // Herlaad pagina met nieuwe klant
+            HttpContext.Session.SetObject("Cart", cart);
+            return RedirectToPage("Index");
         }
     }
 }

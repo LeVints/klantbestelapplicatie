@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model KE03_INTDEV_SE_1_Base.Pages.IndexModel
 @{
     ViewData["Title"] = "Online Bestelsysteem";
 }
@@ -9,7 +9,7 @@
     <p class="lead text-muted">Een gebruiksvriendelijk platform voor al uw bestellingen</p>
 </section>
 
-<!-- Formulier om nieuwe klant toe te voegen -->
+<!-- Klant toevoegen formulier -->
 <div class="container mb-4">
     <form method="post">
         <div class="row g-3 align-items-center">
@@ -26,52 +26,41 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success">Nieuwe klant toevoegen</button>
+                <button type="submit" class="btn btn-success">Klant toevoegen</button>
             </div>
         </div>
     </form>
 </div>
 
-<!-- Klantoverzicht -->
-<div class="container mb-5">
-    <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Klantoverzicht</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">Klantnaam</th>
-                            <th>Aantal Orders</th>
-                            <th>Acties</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var c in Model.Customers)
-                        {
-                            <tr>
-                                <td class="ps-4 fw-semibold">@c.Name</td>
-                                <td>
-                                    <span class="badge bg-info text-dark">
-                                        @c.Orders.Count
-                                    </span>
-                                </td>
-                                <td>
-                                    <a asp-page="/Customer/Details" asp-route-id="@c.Id"
-                                       class="btn btn-sm btn-outline-primary me-1">Bekijk</a>
-                                    <a asp-page="/Order/Create" asp-route-customerId="@c.Id"
-                                       class="btn btn-sm btn-outline-success">Bestel</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card-footer text-muted">
-            <small>Totaal @Model.Customers.Count klanten gevonden</small>
-        </div>
-    </div>
+<!-- Productenoverzicht -->
+<div class="container mt-5">
+    <h2>Producten</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Prijs</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>&euro; @product.Price.ToString("0.00")</td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="productId" value="@product.Id" />
+                        <input type="hidden" name="productName" value="@product.Name" />
+                        <input type="hidden" name="price" value="@product.Price" />
+                        <button type="submit" asp-page-handler="AddToCart" class="btn btn-primary">
+                            Voeg toe aan winkelmand
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>

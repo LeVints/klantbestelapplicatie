@@ -11,37 +11,36 @@ namespace KE03_INTDEV_SE_1_Base
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // We gebruiken voor nu even een SQLite voor de database,
-            // omdat deze eenvoudig lokaal te gebruiken is en geen extra configuratie nodig heeft.
+            // Database setup
             builder.Services.AddDbContext<MatrixIncDbContext>(
                 options => options.UseSqlite("Data Source=MatrixInc.db"));
 
-            // We registreren de repositories in de DI container
+            // Repositories registreren
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IPartRepository, PartRepository>();
 
-            // Add services to the container.
+            // Razor Pages en sessie activeren
             builder.Services.AddRazorPages();
+            builder.Services.AddSession();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
+            // Database initialiseren
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-
                 var context = services.GetRequiredService<MatrixIncDbContext>();
                 context.Database.EnsureCreated();
                 MatrixIncDbInitializer.Initialize(context);
+            }
+
+            // Middleware pipeline
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -50,6 +49,8 @@ namespace KE03_INTDEV_SE_1_Base
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapRazorPages();
 
