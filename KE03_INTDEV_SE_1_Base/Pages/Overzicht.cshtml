@@ -18,11 +18,9 @@
                     <li>
                         Bestelling op: @bestelling.OrderDate.ToShortDateString()
                         <ul>
-                            @foreach (var groep in bestelling.Products.GroupBy(p => p.Id))
+                            @foreach (var orderItem in bestelling.OrderItems)
                             {
-                                var aantal = groep.Count();
-                                var productNaam = groep.First().Name;
-                                <li>@($"{productNaam} x{aantal}")</li>
+                                <li>@($"{orderItem.Product.Name} x{orderItem.Quantity}")</li>
                             }
                         </ul>
                     </li>

@@ -88,10 +88,14 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 var product = _productRepository.GetProductById(item.ProductId);
                 if (product != null)
                 {
-                    for (int i = 0; i < item.Quantity; i++)
+                    var orderItem = new OrderItem
                     {
-                        newOrder.Products.Add(product);
-                    }
+                        ProductId = item.ProductId,
+                        Product = product,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice
+                    };
+                    newOrder.OrderItems.Add(orderItem);
                 }
             }
 

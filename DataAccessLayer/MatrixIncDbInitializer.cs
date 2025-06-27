@@ -55,16 +55,17 @@ namespace DataAccessLayer
 
             context.SaveChanges(); // Sla eerst basisgegevens op zodat IDs beschikbaar zijn
 
-            // Koppel producten aan orders
-            orders[0].Products.Add(products[0]);
-            orders[0].Products.Add(products[1]);
-
-            orders[1].Products.Add(products[2]);
-
-            orders[2].Products.Add(products[1]);
-
-            orders[3].Products.Add(products[0]);
-            orders[3].Products.Add(products[2]);
+            // Koppel producten aan orders via OrderItems
+            var orderItems = new OrderItem[]
+            {
+                new OrderItem { Order = orders[0], Product = products[0], Quantity = 1, UnitPrice = products[0].Price },
+                new OrderItem { Order = orders[0], Product = products[1], Quantity = 2, UnitPrice = products[1].Price },
+                new OrderItem { Order = orders[1], Product = products[2], Quantity = 1, UnitPrice = products[2].Price },
+                new OrderItem { Order = orders[2], Product = products[1], Quantity = 1, UnitPrice = products[1].Price },
+                new OrderItem { Order = orders[3], Product = products[0], Quantity = 1, UnitPrice = products[0].Price },
+                new OrderItem { Order = orders[3], Product = products[2], Quantity = 3, UnitPrice = products[2].Price }
+            };
+            context.OrderItems.AddRange(orderItems);
 
             // Koppel onderdelen aan producten
             products[0].Parts.Add(parts[0]);

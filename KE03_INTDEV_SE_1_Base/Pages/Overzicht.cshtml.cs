@@ -28,11 +28,13 @@ namespace KE03_INTDEV_SE_1_Base.Pages
         {
             Customers = await _context.Customers
                 .Include(c => c.Orders)
-                    .ThenInclude(o => o.Products)
+                    .ThenInclude(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Product)
                 .ToListAsync();
 
             Orders = await _context.Orders
-                .Include(o => o.Products)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
                 .ToListAsync();
 
             Products = await _context.Products
