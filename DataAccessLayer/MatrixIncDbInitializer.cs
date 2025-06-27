@@ -9,10 +9,10 @@ namespace DataAccessLayer
     {
         public static void Initialize(MatrixIncDbContext context)
         {
-            // Check of de database al data bevat
+            // Controleer of de database al data bevat
             if (context.Customers.Any())
             {
-                return;   // DB is al gevuld
+                return;   // De database is al gevuld
             }
 
             // Klanten
@@ -53,7 +53,7 @@ namespace DataAccessLayer
             };
             context.Parts.AddRange(parts);
 
-            context.SaveChanges(); // Sla eerst basisgegevens op zodat IDs beschikbaar zijn
+            context.SaveChanges(); // Sla eerst de basisgegevens op zodat de IDs beschikbaar zijn
 
             // Koppel producten aan orders via OrderItems
             var orderItems = new OrderItem[]

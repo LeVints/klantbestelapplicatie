@@ -4,28 +4,81 @@
     ViewData["Title"] = "Overzicht";
 }
 
-<h1>Overzicht</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Overzicht</h1>
 
-<h2>Klanten</h2>
-<ul>
-    @foreach (var klant in Model.Customers)
-    {
-        <li>
-            <strong>@klant.Name</strong> - @klant.Address
-            <ul>
-                @foreach (var bestelling in klant.Orders)
+    <div class="overview-section">
+        <h2 class="mb-4">Klanten</h2>
+        
+        @if (!Model.Customers.Any())
+        {
+            <div class="text-center py-4">
+                <div class="text-muted mb-3">
+                    <i class="bi bi-people" style="font-size: 3rem;"></i>
+                </div>
+                <h4 class="text-muted">Geen klanten gevonden</h4>
+                <p class="text-muted">Er zijn nog geen klanten geregistreerd in het systeem.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var klant in Model.Customers)
                 {
-                    <li>
-                        Bestelling op: @bestelling.OrderDate.ToShortDateString()
-                        <ul>
-                            @foreach (var orderItem in bestelling.OrderItems)
+                    <div class="col-12 col-lg-6 mb-4">
+                        <div class="customer-card">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="mb-1 fw-bold">@klant.Name</h5>
+                                    <p class="text-muted mb-0">
+                                        <i class="bi bi-geo-alt"></i> @klant.Address
+                                    </p>
+                                </div>
+                                <span class="badge bg-primary">@klant.Orders.Count bestellingen</span>
+                            </div>
+                            
+                            @if (klant.Orders.Any())
                             {
-                                <li>@($"{orderItem.Product.Name} x{orderItem.Quantity}")</li>
+                                <div class="mt-3">
+                                    <h6 class="fw-semibold mb-2">Bestellingen:</h6>
+                                    @foreach (var bestelling in klant.Orders)
+                                    {
+                                        <div class="order-item mb-2">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar"></i> @bestelling.OrderDate.ToShortDateString()
+                                                </small>
+                                                <small class="text-muted">
+                                                    @bestelling.OrderItems.Count items
+                                                </small>
+                                            </div>
+                                            <div class="row">
+                                                @foreach (var orderItem in bestelling.OrderItems)
+                                                {
+                                                    <div class="col-12 col-sm-6">
+                                                        <small>
+                                                            <i class="bi bi-box"></i> @orderItem.Product.Name 
+                                                            <span class="text-muted">(x@{ Write(orderItem.Quantity); })</span>
+                                                        </small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             }
-                        </ul>
-                    </li>
+                            else
+                            {
+                                <div class="text-center py-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle"></i> Geen bestellingen
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 }
-            </ul>
-        </li>
-    }
-</ul>
+            </div>
+        }
+    </div>
+</div>

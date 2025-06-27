@@ -11,33 +11,62 @@
 
 <!-- Productenoverzicht -->
 <div class="container mt-5">
-    <h2>Producten</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Naam</th>
-                <th>Prijs</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+    <h2 class="mb-4">Producten</h2>
+    
+    <!-- Desktop table view -->
+    <div class="d-none d-md-block">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Naam</th>
+                        <th>Prijs</th>
+                        <th class="text-center">Actie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td class="fw-medium">@product.Name</td>
+                            <td class="text-primary fw-bold">&euro; @product.Price.ToString("0.00")</td>
+                            <td class="text-center">
+                                <form method="post">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="productName" value="@product.Name" />
+                                    <input type="hidden" name="price" value="@product.Price" />
+                                    <button type="submit" asp-page-handler="AddToCart" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-cart-plus"></i> Toevoegen
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Mobile card view -->
+    <div class="d-md-none">
+        <div class="row">
             @foreach (var product in Model.Products)
-        {
-            <tr>
-                <td>@product.Name</td>
-                <td>&euro; @product.Price.ToString("0.00")</td>
-                <td>
-                    <form method="post">
-                        <input type="hidden" name="productId" value="@product.Id" />
-                        <input type="hidden" name="productName" value="@product.Name" />
-                        <input type="hidden" name="price" value="@product.Price" />
-                        <button type="submit" asp-page-handler="AddToCart" class="btn btn-primary">
-                            Voeg toe aan winkelmand
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+            {
+                <div class="col-12 mb-3">
+                    <div class="product-card">
+                        <div class="product-name">@product.Name</div>
+                        <div class="product-price">&euro; @product.Price.ToString("0.00")</div>
+                        <form method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="hidden" name="productName" value="@product.Name" />
+                            <input type="hidden" name="price" value="@product.Price" />
+                            <button type="submit" asp-page-handler="AddToCart" class="btn btn-primary">
+                                <i class="bi bi-cart-plus"></i> Toevoegen aan winkelwagen
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>

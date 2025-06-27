@@ -4,68 +4,138 @@
     ViewData["Title"] = "Winkelwagen";
 }
 
-<h1 class="mt-5">Winkelwagen</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Winkelwagen</h1>
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-info">
-        @TempData["Message"]
-    </div>
-}
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 
-@if (!Model.Items.Any())
-{
-    <p class="text-muted">Je winkelwagen is leeg.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th style="width: 160px;" class="text-center">Aantal</th>
-                <th class="text-end">Prijs per stuk</th>
-                <th class="text-end">Subtotaal</th>
-                <th class="text-end">Acties</th>
-            </tr>
-        </thead>
-        <tbody>
+    @if (!Model.Items.Any())
+    {
+        <div class="text-center py-5">
+            <div class="text-muted mb-3">
+                <i class="bi bi-cart-x" style="font-size: 3rem;"></i>
+            </div>
+            <h3 class="text-muted">Je winkelwagen is leeg</h3>
+            <p class="text-muted">Voeg producten toe om te beginnen met winkelen</p>
+            <a href="/" class="btn btn-primary">Terug naar producten</a>
+        </div>
+    }
+    else
+    {
+        <!-- Desktop table view -->
+        <div class="d-none d-md-block">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th style="width: 160px;" class="text-center">Aantal</th>
+                            <th class="text-end">Prijs per stuk</th>
+                            <th class="text-end">Subtotaal</th>
+                            <th class="text-end">Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="fw-medium">@item.ProductName</td>
+                                <td class="text-center">
+                                    <form method="post" asp-page-handler="UpdateQuantity" class="d-inline">
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1"
+                                               class="form-control form-control-sm text-center"
+                                               style="width: 70px;"
+                                               onchange="this.form.submit()" />
+                                    </form>
+                                </td>
+                                <td class="text-end">&euro; @item.UnitPrice.ToString("0.00")</td>
+                                <td class="text-end fw-bold">&euro; @((item.UnitPrice * item.Quantity).ToString("0.00"))</td>
+                                <td class="text-end">
+                                    <form method="post" asp-page-handler="RemoveItem" class="d-inline">
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> Verwijder
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="3" class="text-end fw-bold fs-5">Totaal</td>
+                            <td class="text-end fw-bold fs-5 text-primary">
+                                &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile card view -->
+        <div class="d-md-none">
             @foreach (var item in Model.Items)
             {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td class="text-center">
-                        <form method="post" asp-page-handler="UpdateQuantity" class="d-inline">
+                <div class="cart-item">
+                    <div class="fw-bold mb-2">@item.ProductName</div>
+                    
+                    <div class="quantity-control">
+                        <label class="form-label mb-1">Aantal:</label>
+                        <form method="post" asp-page-handler="UpdateQuantity">
                             <input type="hidden" name="productId" value="@item.ProductId" />
                             <input type="number" name="quantity" value="@item.Quantity" min="1"
-                                   class="form-control form-control-sm text-center"
-                                   style="width: 70px;"
+                                   class="form-control"
                                    onchange="this.form.submit()" />
                         </form>
-                    </td>
-                    <td class="text-end">&euro; @item.UnitPrice.ToString("0.00")</td>
-                    <td class="text-end">&euro; @((item.UnitPrice * item.Quantity).ToString("0.00"))</td>
-                    <td class="text-end">
-                        <form method="post" asp-page-handler="RemoveItem" class="d-inline">
+                    </div>
+                    
+                    <div class="price-info">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <small class="text-muted">Prijs per stuk</small>
+                                <div>&euro; @item.UnitPrice.ToString("0.00")</div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Subtotaal</small>
+                                <div class="fw-bold">&euro; @((item.UnitPrice * item.Quantity).ToString("0.00"))</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <form method="post" asp-page-handler="RemoveItem">
                             <input type="hidden" name="productId" value="@item.ProductId" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Verwijder</button>
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash"></i> Verwijder uit winkelwagen
+                            </button>
                         </form>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-end fw-bold">Totaal</td>
-                <td class="text-end fw-bold">
-                    &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))
-                </td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
+            
+            <!-- Mobile total -->
+            <div class="cart-item bg-primary text-white">
+                <div class="text-center">
+                    <h4 class="mb-0">Totaal: &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))</h4>
+                </div>
+            </div>
+        </div>
 
-    <form method="post">
-        <button type="submit" asp-page-handler="PlaceOrder" class="btn btn-success mt-3">Bestellen</button>
-    </form>
-}
+        <div class="mt-4">
+            <form method="post">
+                <button type="submit" asp-page-handler="PlaceOrder" class="btn btn-success btn-lg">
+                    <i class="bi bi-check-circle"></i> Bestelling plaatsen
+                </button>
+            </form>
+        </div>
+    }
+</div>

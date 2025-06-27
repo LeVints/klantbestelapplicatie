@@ -75,7 +75,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 return RedirectToPage("Cart");
             }
 
-            var customerId = 1; // In echte app: haal uit sessie of inlog
+            var customerId = 1; // In een echte applicatie: haal uit sessie of inlog
 
             var newOrder = new Order
             {
