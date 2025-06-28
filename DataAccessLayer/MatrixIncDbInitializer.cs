@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace DataAccessLayer
 {
+    /// Database initializer - vult de database met testdata bij eerste gebruik
     public static class MatrixIncDbInitializer
     {
         public static void Initialize(MatrixIncDbContext context)
@@ -15,7 +16,7 @@ namespace DataAccessLayer
                 return;   // De database is al gevuld
             }
 
-            // Klanten
+            // Testklanten aanmaken
             var customers = new Customer[]
             {
                 new Customer { Name = "Neo", Address = "123 Elm St" , Active=true},
@@ -24,7 +25,7 @@ namespace DataAccessLayer
             };
             context.Customers.AddRange(customers);
 
-            // Orders
+            // Testbestellingen aanmaken
             var orders = new Order[]
             {
                 new Order { Customer = customers[0], OrderDate = DateTime.Parse("2021-01-01") },
@@ -34,7 +35,7 @@ namespace DataAccessLayer
             };
             context.Orders.AddRange(orders);
 
-            // Producten
+            // Testproducten aanmaken
             var products = new Product[]
             {
                 new Product { Name = "Nebuchadnezzar", Description = "Het schip waarop Neo voor het eerst de echte wereld leert kennen", Price = 10000.00m },
@@ -43,7 +44,7 @@ namespace DataAccessLayer
             };
             context.Products.AddRange(products);
 
-            // Onderdelen
+            // Testonderdelen aanmaken
             var parts = new Part[]
             {
                 new Part { Name = "Tandwiel", Description = "Overdracht van rotatie in bijvoorbeeld de motor of luikmechanismen"},
@@ -55,7 +56,7 @@ namespace DataAccessLayer
 
             context.SaveChanges(); // Sla eerst de basisgegevens op zodat de IDs beschikbaar zijn
 
-            // Koppel producten aan orders via OrderItems
+            // Bestelregels aanmaken - koppel producten aan bestellingen
             var orderItems = new OrderItem[]
             {
                 new OrderItem { Order = orders[0], Product = products[0], Quantity = 1, UnitPrice = products[0].Price },
@@ -67,13 +68,13 @@ namespace DataAccessLayer
             };
             context.OrderItems.AddRange(orderItems);
 
-            // Koppel onderdelen aan producten
-            products[0].Parts.Add(parts[0]);
+            // Veel-op-veel relaties: koppel onderdelen aan producten
+            products[0].Parts.Add(parts[0]); // Nebuchadnezzar heeft tandwiel en boutje
             products[0].Parts.Add(parts[1]);
 
-            products[1].Parts.Add(parts[2]);
+            products[1].Parts.Add(parts[2]); // Jack-in Chair heeft hydraulische cilinder
 
-            products[2].Parts.Add(parts[3]);
+            products[2].Parts.Add(parts[3]); // EMP device heeft koelvloeistofpomp
 
             context.SaveChanges(); // Sla alle relaties op
         }

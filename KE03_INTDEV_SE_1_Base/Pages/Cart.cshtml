@@ -7,6 +7,7 @@
 <div class="container mt-4">
     <h1 class="mb-4">Winkelwagen</h1>
 
+    @* Toon tijdelijke melding als er een bericht is *@
     @if (TempData["Message"] != null)
     {
         <div class="alert alert-info alert-dismissible fade show" role="alert">
@@ -15,6 +16,7 @@
         </div>
     }
 
+    @* Toon lege winkelwagen als er geen items zijn *@
     @if (!Model.Items.Any())
     {
         <div class="text-center py-5">
@@ -28,7 +30,7 @@
     }
     else
     {
-        <!-- Desktop table view -->
+        @* Desktop weergave van de winkelwagen als tabel *@
         <div class="d-none d-md-block">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -42,11 +44,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @* Herhaal elk item in de winkelwagen *@
                         @foreach (var item in Model.Items)
                         {
                             <tr>
                                 <td class="fw-medium">@item.ProductName</td>
                                 <td class="text-center">
+                                    @* Formulier om de hoeveelheid van een product bij te werken *@
                                     <form method="post" asp-page-handler="UpdateQuantity" class="d-inline">
                                         <input type="hidden" name="productId" value="@item.ProductId" />
                                         <input type="number" name="quantity" value="@item.Quantity" min="1"
@@ -58,6 +62,7 @@
                                 <td class="text-end">&euro; @item.UnitPrice.ToString("0.00")</td>
                                 <td class="text-end fw-bold">&euro; @((item.UnitPrice * item.Quantity).ToString("0.00"))</td>
                                 <td class="text-end">
+                                    @* Formulier om een item te verwijderen *@
                                     <form method="post" asp-page-handler="RemoveItem" class="d-inline">
                                         <input type="hidden" name="productId" value="@item.ProductId" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -71,6 +76,8 @@
                     <tfoot class="table-light">
                         <tr>
                             <td colspan="3" class="text-end fw-bold fs-5">Totaal</td>
+
+                            @* Bereken en toon het totaalbedrag van alle producten in de winkelwagen *@
                             <td class="text-end fw-bold fs-5 text-primary">
                                 &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))
                             </td>
@@ -81,7 +88,7 @@
             </div>
         </div>
 
-        <!-- Mobile card view -->
+        @* Mobiele weergave als kaarten *@
         <div class="d-md-none">
             @foreach (var item in Model.Items)
             {
@@ -90,6 +97,7 @@
                     
                     <div class="quantity-control">
                         <label class="form-label mb-1">Aantal:</label>
+                        @* Formulier voor hoeveelheid wijzigen op mobiel *@
                         <form method="post" asp-page-handler="UpdateQuantity">
                             <input type="hidden" name="productId" value="@item.ProductId" />
                             <input type="number" name="quantity" value="@item.Quantity" min="1"
@@ -112,6 +120,7 @@
                     </div>
                     
                     <div class="actions">
+                        @* Verwijderknop voor mobiel *@
                         <form method="post" asp-page-handler="RemoveItem">
                             <input type="hidden" name="productId" value="@item.ProductId" />
                             <button type="submit" class="btn btn-outline-danger w-100">
@@ -121,8 +130,8 @@
                     </div>
                 </div>
             }
-            
-            <!-- Mobile total -->
+
+            @* Totaaloverzicht voor mobiel *@
             <div class="cart-item bg-primary text-white">
                 <div class="text-center">
                     <h4 class="mb-0">Totaal: &euro; @((Model.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("0.00"))</h4>
@@ -130,6 +139,7 @@
             </div>
         </div>
 
+        @* Knop om bestelling te plaatsen *@
         <div class="mt-4">
             <form method="post">
                 <button type="submit" asp-page-handler="PlaceOrder" class="btn btn-success btn-lg">

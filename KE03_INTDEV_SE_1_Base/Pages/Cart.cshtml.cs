@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using KE03_INTDEV_SE_1_Base.Helpers;
+using KE03_INTDEV_SE_1_Base.Models;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 
@@ -15,27 +16,23 @@ namespace KE03_INTDEV_SE_1_Base.Pages
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
 
+        // Constructor voor dependency injection van repositories
         public CartModel(IOrderRepository orderRepository, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
         }
 
-        public class CartItem
-        {
-            public int ProductId { get; set; }
-            public string ProductName { get; set; } = string.Empty;
-            public int Quantity { get; set; }
-            public decimal UnitPrice { get; set; }
-        }
-
+        // Lijst van items in het winkelmandje
         public List<CartItem> Items { get; set; } = new();
 
+        // Wordt uitgevoerd bij GET-verzoek; haalt winkelmandje op uit sessie
         public void OnGet()
         {
             Items = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
         }
 
+        // Handler voor bijwerken van de hoeveelheid van een product
         public IActionResult OnPostUpdateQuantity(int productId, int quantity)
         {
             var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
@@ -43,6 +40,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
             var item = cart.FirstOrDefault(i => i.ProductId == productId);
             if (item != null)
             {
+                // Zorg ervoor dat de hoeveelheid minimaal 1 is
                 item.Quantity = Math.Max(quantity, 1);
                 HttpContext.Session.SetObject("Cart", cart);
                 TempData["Message"] = $"Aantal voor '{item.ProductName}' bijgewerkt.";
@@ -51,6 +49,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
             return RedirectToPage("Cart");
         }
 
+        // Handler voor verwijderen van een product uit het winkelmandje
         public IActionResult OnPostRemoveItem(int productId)
         {
             var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart") ?? new List<CartItem>();
@@ -66,6 +65,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
             return RedirectToPage("Cart");
         }
 
+        // Handler voor het plaatsen van een bestelling
         public IActionResult OnPostPlaceOrder()
         {
             var items = HttpContext.Session.GetObject<List<CartItem>>("Cart");
@@ -75,7 +75,8 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 return RedirectToPage("Cart");
             }
 
-            var customerId = 1; // In een echte applicatie: haal uit sessie of inlog
+            // Dit is hardcoded klant-id voor demo
+            var customerId = 1;
 
             var newOrder = new Order
             {
@@ -83,6 +84,7 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 OrderDate = DateTime.Now
             };
 
+            // Voeg elk item toe aan de nieuwe bestelling
             foreach (var item in items)
             {
                 var product = _productRepository.GetProductById(item.ProductId);
@@ -99,8 +101,10 @@ namespace KE03_INTDEV_SE_1_Base.Pages
                 }
             }
 
+            // Bestelling opslaan via de repository
             _orderRepository.AddOrder(newOrder);
 
+            // Winkelwagen leegmaken na succesvolle bestelling
             HttpContext.Session.Remove("Cart");
 
             TempData["Message"] = "Bestelling succesvol geplaatst!";

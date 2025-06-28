@@ -4,16 +4,17 @@
     ViewData["Title"] = "Online Bestelsysteem";
 }
 
+@* Titel en introductie *@
 <section class="text-center my-5">
     <h1 class="display-4 fw-bold text-primary">@ViewData["Title"]</h1>
     <p class="lead text-muted">Een gebruiksvriendelijk platform voor al uw bestellingen</p>
 </section>
 
-<!-- Productenoverzicht -->
+@* Productenoverzicht *@
 <div class="container mt-5">
     <h2 class="mb-4">Producten</h2>
     
-    <!-- Desktop table view -->
+    @*Desktop-weergave van producten in tabelvorm *@
     <div class="d-none d-md-block">
         <div class="table-responsive">
             <table class="table table-hover">
@@ -25,12 +26,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @* Toon elk product in een tabelrij *@
                     @foreach (var product in Model.Products)
                     {
                         <tr>
                             <td class="fw-medium">@product.Name</td>
                             <td class="text-primary fw-bold">&euro; @product.Price.ToString("0.00")</td>
                             <td class="text-center">
+                                @* Formulier om product toe te voegen aan winkelwagen *@
                                 <form method="post">
                                     <input type="hidden" name="productId" value="@product.Id" />
                                     <input type="hidden" name="productName" value="@product.Name" />
@@ -47,7 +50,7 @@
         </div>
     </div>
     
-    <!-- Mobile card view -->
+    @* Mobiele weergave van producten als kaarten *@
     <div class="d-md-none">
         <div class="row">
             @foreach (var product in Model.Products)
@@ -56,6 +59,8 @@
                     <div class="product-card">
                         <div class="product-name">@product.Name</div>
                         <div class="product-price">&euro; @product.Price.ToString("0.00")</div>
+                        
+                        @* Formulier om product toe te voegen aan winkelwagen (mobiele versie) *@
                         <form method="post">
                             <input type="hidden" name="productId" value="@product.Id" />
                             <input type="hidden" name="productName" value="@product.Name" />
